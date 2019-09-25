@@ -14,14 +14,13 @@ import Typography from '@material-ui/core/Typography';
 const styles = {
   card: {
     display: 'flex',
-    marginBottom: 20,
-
+    marginBottom: '1.5em'
   },
   image: {
-    minWidth: 200
+    minWidth: '12.5em'
   },
   content: {
-    padding: 25,
+    padding: '1.562em',
     objectFit: 'cover'
   }
 };
@@ -59,4 +58,4 @@ class Scream extends Component {
   }
 }
 
-export default withStyles(styles)(Scream)
+export default withStyles(styles)(Scream);

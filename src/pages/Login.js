@@ -1,13 +1,151 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import withStyles from '@material-ui/core/styles/withStyles';
+import PropTypes from 'prop-types';
+import AppIcon from '../images/icon.png';
+import axios from 'axios';
+
+// MUI Stuff
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const styles = {
+  form: {
+    textAlign: 'center'
+  },
+  image: {
+    margin: '1.5em auto 1.5em'
+  },
+  pageTitle: {
+    margin: '.8rem auto .8rem'
+  },
+  textField: {
+    margin: '.8em auto .8em'
+  },
+  button: {
+    marginTop: '1.4em',
+    position: 'relative'
+  },
+  customError: {
+    color: '#f00',
+    fontSize: '.8em',
+    marginTop: '.8em'
+  },
+  progress: {
+    position: 'absolute'
+  }
+};
 
 class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      email: '',
+      password: '',
+      loading: false,
+      errors: {}
+    };
+  }
+
+  handleSubmit = event => {
+    event.preventDefault();
+    this.setState({
+      loading: true
+    });
+
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+
+    axios.post('/login', userData)
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          loading: false
+        });
+        this.props.history.push('/');
+      })
+      .catch(err => {
+        this.setState({
+          errors: err.response.data,
+          loading: false
+        });
+      });
+  }
+
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+
   render() {
+    const { classes } = this.props;
+    const { errors, loading } = this.state;
+
     return (
-      <div>
-        <h1>Login page</h1>
-      </div>
+      <Grid container className={classes.form}>
+        <Grid item sm/>
+        <Grid item sm>
+          <img src={AppIcon} alt="monkey" className={classes.image} />
+          <Typography variant="h2" className={classes.pageTitle}>Login</Typography>
+          <form noValidate onSubmit={this.handleSubmit}>
+            <TextField
+              id="email"
+              name="email"
+              type="email"
+              label="Email"
+              className={classes.textField}
+              helperText={errors.email}
+              error={errors.email ? true : false}
+              value={this.state.email}
+              onChange={this.handleChange}
+              fullWidth></TextField>
+            <TextField
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              className={classes.textField}
+              helperText={errors.password}
+              error={errors.password ? true : false}
+              value={this.state.password}
+              onChange={this.handleChange}
+              fullWidth></TextField>
+            {errors.general && (
+              <Typography variant="body2" className={classes.customError}>
+                {errors.general}
+              </Typography>
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              disable={loading.toString()}
+            >
+              Login
+              {loading && (
+                <CircularProgress size={30} className={classes.progress} />
+              )}
+            </Button>
+            <p>
+              <small>Don't have an account? <Link to="/signup">sign up here</Link></small>
+            </p>            
+          </form>
+        </Grid>
+        <Grid item sm/>
+      </Grid>
     )
   }
 }
 
-export default Login
+Login.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(Login);
