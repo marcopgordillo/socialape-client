@@ -12,32 +12,9 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const styles = {
-  form: {
-    textAlign: 'center'
-  },
-  image: {
-    margin: '1.5em auto 1.5em'
-  },
-  pageTitle: {
-    margin: '.8rem auto .8rem'
-  },
-  textField: {
-    margin: '.8em auto .8em'
-  },
-  button: {
-    marginTop: '1.4em',
-    position: 'relative'
-  },
-  customError: {
-    color: '#f00',
-    fontSize: '.8em',
-    marginTop: '.8em'
-  },
-  progress: {
-    position: 'absolute'
-  }
-};
+const styles = theme => ({
+  ...theme
+});
 
 class Login extends Component {
   constructor() {
@@ -63,7 +40,7 @@ class Login extends Component {
 
     axios.post('/login', userData)
       .then(res => {
-        console.log(res.data);
+        localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`); //save the token
         this.setState({
           loading: false
         });
@@ -92,7 +69,9 @@ class Login extends Component {
         <Grid item sm/>
         <Grid item sm>
           <img src={AppIcon} alt="monkey" className={classes.image} />
-          <Typography variant="h2" className={classes.pageTitle}>Login</Typography>
+          <Typography variant="h2" className={classes.pageTitle}>
+            Login
+          </Typography>
           <form noValidate onSubmit={this.handleSubmit}>
             <TextField
               id="email"
@@ -126,7 +105,7 @@ class Login extends Component {
               variant="contained"
               color="primary"
               className={classes.button}
-              disable={loading.toString()}
+              disabled={loading}
             >
               Login
               {loading && (
