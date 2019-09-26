@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import jwtDecode from 'jwt-decode';
 
 import './App.css';
 
@@ -19,7 +19,8 @@ const theme = createMuiTheme(themeObject);
 const token = localStorage.getItem('FBIdToken');
 
 if (token) {
-  
+  const decodedToken = jwtDecode(token);
+  console.log(decodedToken);
 }
 
 function App() {
